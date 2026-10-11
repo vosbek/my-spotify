@@ -1,34 +1,23 @@
 # mySpotify
 
-A fast, keyboard-friendly music player for your Spotify account. It runs on your own computer, has
-no build step and no dependencies beyond Python, and plays through Spotify's official Web Playback SDK.
+A fast, keyboard-friendly music player for your Spotify account. It runs on your own computer as a
+single `mySpotify.exe` (or from source with plain Python) and plays through Spotify's official Web Playback SDK.
 
 ![mySpotify playlist view, shown with sample data](docs/playlist.png)
 
-**You need:** Spotify Premium, Windows 10/11 (or macOS/Linux), Python 3.9+, and Edge, Chrome, or Firefox.
+**You need:** Spotify Premium, Windows 10/11 (or macOS/Linux), and Edge, Chrome, or Firefox.
 
-## Run it on Windows
+## Run it on Windows (no Python needed)
 
-### 1. Get the code
+### 1. Download mySpotify.exe
 
-Download the ZIP from the green **Code** button on GitHub and extract it, or:
+Go to [**Releases**](https://github.com/vosbek/my-spotify/releases/latest) and download `mySpotify.exe`.
 
-```powershell
-git clone https://github.com/vosbek/my-spotify
-cd my-spotify
-```
+The exe isn't code-signed, so the first time you open it Windows may show **"Windows protected your PC"**.
+Click **More info**, then **Run anyway**. Each release also lists the file's SHA-256 checksum, so you can
+check the download (`Get-FileHash .\mySpotify.exe` in PowerShell).
 
-### 2. Make sure Python is installed
-
-Open PowerShell and run `py --version`. If it says it is not recognized, install Python:
-
-```powershell
-winget install Python.Python.3.13
-```
-
-Close and reopen PowerShell afterwards.
-
-### 3. Create your Spotify app (one time, about 5 minutes)
+### 2. Create your Spotify app (one time, about 5 minutes)
 
 Spotify requires every app to have its own Client ID. It is free.
 
@@ -40,18 +29,19 @@ Spotify requires every app to have its own Client ID. It is free.
 5. Save. Open the app's **Settings** and copy the **Client ID** (32 letters and numbers).
    You do **not** need the Client secret.
 
-### 4. Start mySpotify
+### 3. Start mySpotify
 
-Double-click **`start.cmd`**, or run:
+Double-click **`mySpotify.exe`**. A small window opens, and so does your browser at
+<http://127.0.0.1:8888>. Paste the Client ID, click **Sign in with Spotify**, and approve.
+Keep the small window open while you listen; close it to stop mySpotify.
 
-```powershell
-py myspotify.py
-```
+### Prefer to run from source?
 
-Your browser opens <http://127.0.0.1:8888>. Paste the Client ID, click **Sign in with Spotify**, and
-approve. Leave the black PowerShell window open while you listen; close it to stop mySpotify.
+Install Python (`winget install Python.Python.3.13`), download this repository (green **Code** button,
+then **Download ZIP**, or `git clone https://github.com/vosbek/my-spotify`), and double-click **`start.cmd`**
+or run `py myspotify.py`.
 
-### 5. Make it feel like a desktop app (optional)
+### 4. Make it feel like a desktop app (optional)
 
 In Edge, open the `...` menu, then **Apps > Install this site as an app**. In Chrome, open the `⋮` menu,
 then **Cast, save, and share > Install page as app**. mySpotify then gets its own window, taskbar icon,
@@ -87,8 +77,10 @@ Anyone can also run their own copy with their own Client ID by following the ste
 | "Spotify refused access" after sign-in | Add your Spotify account's email under **User Management** in the dashboard. |
 | "Playing in mySpotify needs Spotify Premium" | Free accounts can browse and control other devices but cannot play in the browser. |
 | "This browser cannot play Spotify audio" | Use Edge, Chrome, or Firefox. In Firefox, allow DRM content when asked. |
-| Port 8888 is busy | `py myspotify.py --port 8889`, then add `http://127.0.0.1:8889/callback` in the dashboard. |
-| Player never connects | Try `py myspotify.py --relaxed-csp` to rule out the security policy, and disable ad blockers for 127.0.0.1. |
+| Port 8888 is busy | In PowerShell run `.\mySpotify.exe --port 8889` (or `py myspotify.py --port 8889`), then add `http://127.0.0.1:8889/callback` in the dashboard. |
+| "Windows protected your PC" | The exe isn't code-signed. Click **More info**, then **Run anyway**. |
+| Antivirus quarantines the exe | Single-file Python apps are sometimes flagged by mistake. Compare the SHA-256 with the release page, allow the file, or run from source instead. |
+| Player never connects | Try `.\mySpotify.exe --relaxed-csp` (or `py myspotify.py --relaxed-csp`) to rule out the security policy, and disable ad blockers for 127.0.0.1. |
 
 ## Privacy and security
 
@@ -108,11 +100,24 @@ reports, and feature map are in [`recon/`](recon/README.md).
 ## Project layout
 
 ```
-myspotify.py        local server (Python standard library only)
+myspotify.py        local server (Python standard library only); also the entry point of mySpotify.exe
 start.cmd/start.sh  launchers
 app/                the app: index.html, styles.css, js/{auth,api,player,ui,main}.js
 tests/              server tests (python -m unittest) and a mocked browser smoke test (node tests/ui-smoke.cjs)
 recon/              reverse-engineering notes and Clearbox reports
+packaging/          icon and Windows version resource for the exe
+```
+
+## Building the exe
+
+`.github/workflows/windows-exe.yml` builds `mySpotify.exe` with PyInstaller on a Windows runner, runs the
+tests, starts the exe and checks it serves the app, then uploads it. Pushing a tag such as `v1.1.0`
+publishes it as a GitHub Release. To build it yourself on Windows:
+
+```powershell
+py -m pip install pyinstaller==6.11.1 pillow==11.0.0
+py packaging\make_icon.py
+pyinstaller --onefile --name mySpotify --icon packaging\mySpotify.ico --version-file packaging\version_info.txt --add-data "app;app" myspotify.py
 ```
 
 ## Development

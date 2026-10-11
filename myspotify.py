@@ -21,8 +21,11 @@ from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
 
-APP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app")
-VERSION = "1.0.0"
+FROZEN = getattr(sys, "frozen", False)  # True inside the packaged mySpotify.exe
+# PyInstaller unpacks bundled files to sys._MEIPASS. realpath() so the jail check compares like with like
+# (Windows temp paths can be 8.3 short names until resolved).
+APP_DIR = os.path.realpath(os.path.join(getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__))), "app"))
+VERSION = "1.1.0"
 
 # The Web Playback SDK runs in an iframe from sdk.scdn.co and streams from Spotify's CDNs.
 CSP = "; ".join([
@@ -89,6 +92,15 @@ def make_server(port: int, relaxed_csp: bool = False) -> ThreadingHTTPServer:
     return ThreadingHTTPServer(("127.0.0.1", port), handler)
 
 
+def pause_if_frozen() -> None:
+    """Keep the .exe window open long enough to read an error message."""
+    if FROZEN:
+        try:
+            input("Press Enter to close this window.")
+        except EOFError:
+            pass
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run mySpotify locally.")
     parser.add_argument("--port", type=int, default=8888)
@@ -104,11 +116,13 @@ def main(argv: list[str] | None = None) -> int:
     except OSError as exc:
         print(f"Could not listen on 127.0.0.1:{args.port} ({exc.strerror}). Is mySpotify already running? "
               f"Try --port 8889 and add http://127.0.0.1:8889/callback to your Spotify app.")
+        pause_if_frozen()
         return 1
     url = f"http://127.0.0.1:{args.port}/"
     print(f"mySpotify {VERSION} is running at {url}")
     print(f"Redirect URI for your Spotify app: {url}callback")
-    print("Press Ctrl+C to stop.")
+    print("Keep this window open while you listen. Close it, or press Ctrl+C, to stop." if FROZEN
+          else "Press Ctrl+C to stop.")
     if not args.no_browser:
         threading.Timer(0.6, lambda: webbrowser.open(url)).start()
     try:
