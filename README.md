@@ -111,8 +111,8 @@ packaging/          icon and Windows version resource for the exe
 ## Building the exe
 
 `.github/workflows/windows-exe.yml` builds `mySpotify.exe` with PyInstaller on a Windows runner, runs the
-tests, starts the exe and checks it serves the app, then uploads it. Pushing a tag such as `v1.1.0`
-publishes it as a GitHub Release. To build it yourself on Windows:
+tests, starts the exe and checks it serves the app, then publishes it as the GitHub Release
+`v<VERSION>` (from `myspotify.py`) on every push to `main`. Bump `VERSION` for a new release. To build it yourself on Windows:
 
 ```powershell
 py -m pip install pyinstaller==6.11.1 pillow==11.0.0
