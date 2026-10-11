@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>mySpotify</title>
+<meta name="description" content="A fast, keyboard-friendly music player for your Spotify account.">
+<meta name="theme-color" content="#121016">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<script type="module" src="/js/main.js"></script>
+</head>
+<body class="gated">
+  <section id="gate" aria-label="Set up mySpotify"></section>
+
+  <div class="shell">
+    <aside class="sidebar" aria-label="Navigation and library">
+      <nav class="nav">
+        <a class="brand" href="#/home"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M10 17.5a2.5 2.5 0 1 1-2.5-2.5H10V5l9-1.5v11a2.5 2.5 0 1 1-2.5-2.5H19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>mySpotify</a>
+        <a href="#/home" data-route="home"><svg class="icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 11l8-6.5 8 6.5V20h-5.5v-5.5h-5V20H4z" fill="currentColor"/></svg>Home</a>
+        <a href="#/search/" data-route="search"><svg class="icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 0 4 11.6l4.2 4.2 1.4-1.4-4.2-4.2A6.5 6.5 0 0 0 10.5 4zm0 2a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9z" fill="currentColor"/></svg>Search</a>
+        <a href="#/settings" data-route="settings"><svg class="icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-1.7-1L15 3.5h-4L10.6 6a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.4z" fill="currentColor"/></svg>Settings</a>
+      </nav>
+      <section class="libpanel" aria-label="Your library">
+        <div class="lib-head"><h2>Your Library</h2></div>
+        <div class="chips" role="group" aria-label="Filter library">
+          <button class="chip" type="button" data-filter="playlists" aria-pressed="false">Playlists</button>
+          <button class="chip" type="button" data-filter="albums" aria-pressed="false">Albums</button>
+          <button class="chip" type="button" data-filter="artists" aria-pressed="false">Artists</button>
+        </div>
+        <input id="lib-filter" class="lib-filter" type="search" placeholder="Filter your library" aria-label="Filter your library">
+        <div id="library" class="library"><p class="muted pad">Loading your library…</p></div>
+      </section>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="history">
+          <button id="nav-back" class="round-btn" type="button" aria-label="Back"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button id="nav-fwd" class="round-btn" type="button" aria-label="Forward"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        </div>
+        <label class="searchbox"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 0 4 11.6l4.2 4.2 1.4-1.4-4.2-4.2A6.5 6.5 0 0 0 10.5 4zm0 2a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9z" fill="currentColor"/></svg>
+          <input id="search" type="search" placeholder="What do you want to play?" aria-label="Search Spotify" autocomplete="off"></label>
+        <a id="me" class="me" href="#/settings" aria-label="Account and settings"></a>
+      </div>
+      <main id="view" class="view" tabindex="-1"></main>
+    </div>
+
+    <footer id="playerbar" class="playerbar" aria-label="Player"></footer>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "mySpotify",
+  "short_name": "mySpotify",
+  "description": "A fast, keyboard-friendly player for your Spotify account.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d0c10",
+  "theme_color": "#121016",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

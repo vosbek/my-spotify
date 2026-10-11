@@ -1,0 +1,4119 @@
+{
+ "clearbox": "0.1.0",
+ "manifest": {
+  "target": "SpotifySetup.exe",
+  "template": {
+   "id": "binary-triage",
+   "name": "Binary triage",
+   "summary": "Identify every opaque file: format, architecture, sections, entropy, and the strings that hint at what it does. Headers only; nothing is executed.",
+   "sha256": "19c7d5ecd2b541310eaa9ab0dfc87b1cc69aeb02f116197e0c6d4fbc1e8a7491"
+  },
+  "params": {},
+  "started": "2026-10-11T18:14:13+00:00",
+  "duration_s": 0.14,
+  "analyzers": {
+   "inventory": 0.0,
+   "binary": 0.139
+  },
+  "python": "3.13.16",
+  "limits": {
+   "max_files": 100000,
+   "max_file_bytes": 4194304,
+   "max_binary_bytes": 67108864,
+   "max_total_bytes": 2147483648
+  },
+  "files_seen": 1,
+  "files_read": 1,
+  "bytes_read": 1086952,
+  "ledger_sha256": "01531f8d64b2c86ab14c9902989c913cc513479a5a4e08d4f33e8a199a235e37",
+  "safety": [
+   "Read-only: target files are opened O_RDONLY and never modified.",
+   "No execution: nothing from the target is run, imported, or evaluated. Python is parsed with ast.parse.",
+   "No network: Clearbox has no networking code; it analyzes a local directory only.",
+   "Jailed: paths that resolve outside the target are refused; symlinks are not followed.",
+   "Bounded: file count, per-file size, and total bytes read are capped.",
+   "Redacted: secret values are masked and fingerprinted before they reach a report.",
+   "Accountable: every file read is listed in the ledger with its SHA-256."
+  ],
+  "severity_counts": {},
+  "content_sha256": "5e373fe6bd9c29056b869ddd3871cfd41165f87e42e357eac8209c1d1beba85b"
+ },
+ "sections": [
+  {
+   "title": "What is in here?",
+   "question": "Which formats, and how much of the target is opaque?",
+   "views": [
+    {
+     "id": "inventory.stats",
+     "kind": "stats",
+     "title": "Shape of the target",
+     "note": "",
+     "items": [
+      {
+       "label": "Files",
+       "value": 1,
+       "hint": "1.0 MB on disk"
+      },
+      {
+       "label": "Lines of code",
+       "value": 0,
+       "hint": "across 0 source files"
+      },
+      {
+       "label": "Test code",
+       "value": "0%",
+       "hint": "0 lines in test files"
+      },
+      {
+       "label": "Languages",
+       "value": 0,
+       "hint": "none detected"
+      },
+      {
+       "label": "Skipped",
+       "value": 0,
+       "hint": "symlinks, oversized, or special files"
+      }
+     ]
+    },
+    {
+     "id": "binary.formats",
+     "kind": "table",
+     "title": "Opaque file formats",
+     "columns": [
+      {
+       "key": "format",
+       "label": "Format"
+      },
+      {
+       "key": "count",
+       "label": "Files"
+      }
+     ],
+     "rows": [
+      {
+       "format": "PE",
+       "count": 1
+      }
+     ],
+     "total": 1,
+     "note": "",
+     "confidence": "parsed"
+    }
+   ]
+  },
+  {
+   "title": "Executables and archives",
+   "question": "Architecture, kind, entropy, and notable properties of each binary.",
+   "views": [
+    {
+     "id": "binary.files",
+     "kind": "table",
+     "title": "Binaries and opaque files",
+     "columns": [
+      {
+       "key": "path",
+       "label": "File"
+      },
+      {
+       "key": "format",
+       "label": "Format"
+      },
+      {
+       "key": "arch",
+       "label": "Arch"
+      },
+      {
+       "key": "kind",
+       "label": "Kind"
+      },
+      {
+       "key": "size",
+       "label": "Bytes"
+      },
+      {
+       "key": "entropy",
+       "label": "Entropy"
+      },
+      {
+       "key": "notes",
+       "label": "Notes"
+      }
+     ],
+     "rows": [
+      {
+       "path": "SpotifySetup.exe",
+       "format": "PE",
+       "arch": "x86-64",
+       "kind": "executable",
+       "size": 1074664,
+       "entropy": "6.25",
+       "notes": "link timestamp 0x4554fa1e is not a plausible date (deterministic /Brepro build), MSVC Rich header present",
+       "sections": ".text, .rdata, .data, .pdata, .fptable, .rsrc, .reloc",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "PE x86-64",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      }
+     ],
+     "total": 1,
+     "note": "Entropy is bits per byte (0 to 8). Above 7.2 usually means compressed or encrypted content.",
+     "confidence": "parsed"
+    },
+    {
+     "id": "binary.pe",
+     "kind": "table",
+     "title": "Windows executables: identity and signature",
+     "columns": [
+      {
+       "key": "path",
+       "label": "File"
+      },
+      {
+       "key": "product",
+       "label": "Product"
+      },
+      {
+       "key": "company",
+       "label": "Company"
+      },
+      {
+       "key": "description",
+       "label": "Description"
+      },
+      {
+       "key": "subsystem",
+       "label": "Subsystem"
+      },
+      {
+       "key": "signed",
+       "label": "Authenticode"
+      },
+      {
+       "key": "hardening",
+       "label": "Hardening"
+      }
+     ],
+     "rows": [
+      {
+       "path": "SpotifySetup.exe",
+       "product": "Spotify 1.3.4.258.gc60b10b0946a",
+       "company": "Spotify Ltd",
+       "description": "Spotify Installer",
+       "original": "installer_stub.exe",
+       "subsystem": "Windows GUI",
+       "signed": "yes: CN=DigiCert Trusted Root G4; CN=DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1; CN=Spotify AB; CN=DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA1",
+       "hardening": "high-entropy ASLR, ASLR, DEP/NX",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "PE x86-64 Windows GUI",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      }
+     ],
+     "total": 1,
+     "note": "From the version resource, the certificate table, and DllCharacteristics. Signer names are read from the certificates; Clearbox does not validate the signature chain.",
+     "confidence": "parsed"
+    },
+    {
+     "id": "binary.sections",
+     "kind": "table",
+     "title": "Section tables",
+     "columns": [
+      {
+       "key": "path",
+       "label": "File"
+      },
+      {
+       "key": "sections",
+       "label": "Sections"
+      }
+     ],
+     "rows": [
+      {
+       "path": "SpotifySetup.exe",
+       "format": "PE",
+       "arch": "x86-64",
+       "kind": "executable",
+       "size": 1074664,
+       "entropy": "6.25",
+       "notes": "link timestamp 0x4554fa1e is not a plausible date (deterministic /Brepro build), MSVC Rich header present",
+       "sections": ".text, .rdata, .data, .pdata, .fptable, .rsrc, .reloc",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "PE x86-64",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      }
+     ],
+     "total": 1,
+     "note": "",
+     "confidence": "parsed"
+    }
+   ]
+  },
+  {
+   "title": "What can it do?",
+   "question": "Which operating-system capabilities do the imported functions grant?",
+   "views": [
+    {
+     "id": "binary.capabilities",
+     "kind": "table",
+     "title": "What the imports let it do",
+     "columns": [
+      {
+       "key": "path",
+       "label": "File"
+      },
+      {
+       "key": "capability",
+       "label": "Capability"
+      },
+      {
+       "key": "count",
+       "label": "APIs"
+      },
+      {
+       "key": "apis",
+       "label": "Imported functions"
+      }
+     ],
+     "rows": [
+      {
+       "path": "SpotifySetup.exe",
+       "capability": "Start other programs",
+       "count": 2,
+       "apis": "ShellExecuteW, CreateProcessW",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "SHELL32.dll!ShellExecuteW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!CreateProcessW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "capability": "Inspect or modify other processes",
+       "count": 2,
+       "apis": "OpenProcessToken, OpenProcess",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ADVAPI32.dll!OpenProcessToken",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!OpenProcess",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "capability": "Load code at runtime",
+       "count": 4,
+       "apis": "GetProcAddress, LoadLibraryExW, LoadLibraryExA, LoadLibraryW",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!GetProcAddress",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!LoadLibraryExW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!LoadLibraryExA",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!LoadLibraryW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "capability": "Registry",
+       "count": 2,
+       "apis": "RegSetValueExW, RegCreateKeyExW",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ADVAPI32.dll!RegSetValueExW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ADVAPI32.dll!RegCreateKeyExW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "capability": "Files and folders",
+       "count": 9,
+       "apis": "SHGetFolderPathW, WriteFile, CreateFileW, CreateDirectoryW, DeleteFileW, MoveFileExW, CreateFileMappingA, CreateFileA, CopyFileW",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "SHELL32.dll!SHGetFolderPathW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!WriteFile",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!CreateFileW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!CreateDirectoryW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!DeleteFileW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!MoveFileExW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!CreateFileMappingA",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!CreateFileA",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!CopyFileW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "capability": "Shortcuts and shell integration",
+       "count": 2,
+       "apis": "SHChangeNotify, CoCreateInstance",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "SHELL32.dll!SHChangeNotify",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ole32.dll!CoCreateInstance",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "capability": "Privileges and security",
+       "count": 2,
+       "apis": "OpenProcessToken, GetTokenInformation",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ADVAPI32.dll!OpenProcessToken",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ADVAPI32.dll!GetTokenInformation",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "capability": "User interface",
+       "count": 4,
+       "apis": "InitCommonControlsEx, MessageBoxW, CreateWindowExW, ShowWindow",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "COMCTL32.dll!InitCommonControlsEx",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "USER32.dll!MessageBoxW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "USER32.dll!CreateWindowExW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        },
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "USER32.dll!ShowWindow",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "capability": "Version checks",
+       "count": 1,
+       "apis": "VerifyVersionInfoW",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll!VerifyVersionInfoW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "capability": "Scheduled tasks / COM automation",
+       "count": 1,
+       "apis": "CoInitializeEx",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ole32.dll!CoInitializeEx",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      }
+     ],
+     "total": 10,
+     "note": "Derived from the import table. Functions resolved at runtime with GetProcAddress do not appear here.",
+     "confidence": "parsed"
+    },
+    {
+     "id": "binary.imports",
+     "kind": "table",
+     "title": "Imported DLLs and functions",
+     "columns": [
+      {
+       "key": "path",
+       "label": "File"
+      },
+      {
+       "key": "dll",
+       "label": "DLL"
+      },
+      {
+       "key": "count",
+       "label": "Functions"
+      },
+      {
+       "key": "functions",
+       "label": "Imports"
+      }
+     ],
+     "rows": [
+      {
+       "path": "SpotifySetup.exe",
+       "dll": "COMCTL32.dll",
+       "count": 1,
+       "functions": "InitCommonControlsEx",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "COMCTL32.dll: InitCommonControlsEx",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "dll": "SHELL32.dll",
+       "count": 3,
+       "functions": "SHGetFolderPathW, ShellExecuteW, SHChangeNotify",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "SHELL32.dll: SHGetFolderPathW, ShellExecuteW, SHChangeNotify",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "dll": "ADVAPI32.dll",
+       "count": 8,
+       "functions": "GetNamedSecurityInfoW, RegSetValueExW, OpenProcessToken, GetTokenInformation, SetEntriesInAclW, SetNamedSecurityInfoW, ConvertStringSidToSidW, RegCreateKeyExW",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ADVAPI32.dll: GetNamedSecurityInfoW, RegSetValueExW, OpenProcessToken, GetTokenInformation, SetEntriesInAclW, SetNamedSecurityInfoW, ConvertStringSidToSidW, RegCreateKeyExW",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "dll": "KERNEL32.dll",
+       "count": 147,
+       "functions": "QueryPerformanceCounter, GetCurrentProcessId, GetCurrentThreadId, GetSystemTimeAsFileTime, InitializeSListHead, RtlCaptureContext, RtlLookupFunctionEntry, RtlVirtualUnwind, IsDebuggerPresent, UnhandledExceptionFilter, SetUnhandledExceptionFilter, GetStartupInfoW, IsProcessorFeaturePresent, GetModuleHandleW \u2026 +133",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll: QueryPerformanceCounter, GetCurrentProcessId, GetCurrentThreadId, GetSystemTimeAsFileTime, InitializeSListHead, RtlCaptureContext, RtlLookupFunctionEntry, RtlVirtual\u2026",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "dll": "USER32.dll",
+       "count": 26,
+       "functions": "LoadIconW, LoadCursorW, SetWindowLongW, GetWindowLongW, MessageBoxW, AdjustWindowRect, SetTimer, GetActiveWindow, GetDlgItem, GetDC, CreateWindowExW, RegisterClassExW, DefWindowProcW, PostMessageW \u2026 +12",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "USER32.dll: LoadIconW, LoadCursorW, SetWindowLongW, GetWindowLongW, MessageBoxW, AdjustWindowRect, SetTimer, GetActiveWindow, GetDlgItem, GetDC, CreateWindowExW, RegisterClassExW,\u2026",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "dll": "GDI32.dll",
+       "count": 2,
+       "functions": "GetDeviceCaps, GetStockObject",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "GDI32.dll: GetDeviceCaps, GetStockObject",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "dll": "ole32.dll",
+       "count": 2,
+       "functions": "CoCreateInstance, CoInitializeEx",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ole32.dll: CoCreateInstance, CoInitializeEx",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "path": "SpotifySetup.exe",
+       "dll": "OLEAUT32.dll",
+       "count": 4,
+       "functions": "#6, #200, #7, #201",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "OLEAUT32.dll: #6, #200, #7, #201",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      }
+     ],
+     "total": 8,
+     "note": "",
+     "confidence": "parsed"
+    }
+   ]
+  },
+  {
+   "title": "Strings",
+   "question": "URLs, paths, libraries, and type names embedded in the binaries.",
+   "views": [
+    {
+     "id": "binary.strings",
+     "kind": "table",
+     "title": "Meaningful strings inside binaries",
+     "columns": [
+      {
+       "key": "file",
+       "label": "File"
+      },
+      {
+       "key": "string",
+       "label": "String"
+      },
+      {
+       "key": "count",
+       "label": "Count"
+      }
+     ],
+     "rows": [
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Spotify.exe",
+       "count": 2,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "Spotify.exe",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Spotify_new.exe",
+       "count": 2,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "Spotify_new.exe",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://ocsp.digicert.com0A",
+       "count": 2,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://ocsp.digicert.com0A",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C",
+       "count": 2,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://cacerts.digicert.com/DigiCertTrustedRootG4.crt0C",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://crl3.digicert.com/DigiCertTrustedRootG4.crl0",
+       "count": 2,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://crl3.digicert.com/DigiCertTrustedRootG4.crl0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "https://www.spotify.com",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "https://www.spotify.com",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "uninstall.exe",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "uninstall.exe",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "d.exe",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "d.exe",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "kernel32.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "kernel32.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "VERSION.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "VERSION.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "WININET.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "WININET.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-winrt-l1-1-0.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "api-ms-win-core-winrt-l1-1-0.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-winrt-error-l1-1-1.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "api-ms-win-core-winrt-error-l1-1-1.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "RoOriginateLanguageException",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "RoOriginateLanguageException",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "COMCTL32.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "COMCTL32.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "SHELL32.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "SHELL32.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "ADVAPI32.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ADVAPI32.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "GetLastError",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "GetLastError",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "SetLastError",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "SetLastError",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "KERNEL32.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "KERNEL32.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "USER32.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "USER32.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "GDI32.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "GDI32.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "ole32.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "ole32.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "OLEAUT32.dll",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "OLEAUT32.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://schemas.microsoft.com/SMI/2005/WindowsSettings\">true</dpiAware>",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://schemas.microsoft.com/SMI/2005/WindowsSettings\">true</dpiAware>",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://schemas.microsoft.com/SMI/2016/WindowsSettings\">system</dpiAwareness>",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://schemas.microsoft.com/SMI/2016/WindowsSettings\">system</dpiAwareness>",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "https://download.scdn.co/SpotifyFullSetup[ARCH].exe",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "https://download.scdn.co/SpotifyFullSetup[ARCH].exe",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://www.digicert.com/CPS0",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://www.digicert.com/CPS0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://crl3.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0S",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://crl3.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0S",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://crl4.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://crl4.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://ocsp.digicert.com0\\",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://ocsp.digicert.com0\\",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://cacerts.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crt0",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://cacerts.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crt0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://ocsp.digicert.com0]",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://ocsp.digicert.com0]",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://cacerts.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crt0_",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://cacerts.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crt0_",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://crl3.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crl0",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://crl3.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crl0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://ocsp.digicert.com0C",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://ocsp.digicert.com0C",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://cacerts.digicert.com/DigiCertAssuredIDRootCA.crt0E",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://cacerts.digicert.com/DigiCertAssuredIDRootCA.crt0E",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "http://crl3.digicert.com/DigiCertAssuredIDRootCA.crl0",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "http://crl3.digicert.com/DigiCertAssuredIDRootCA.crl0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "mscoree.dll  (UTF-16)",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "mscoree.dll  (UTF-16)",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "https://www.spotify.com/download  (UTF-16)",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "https://www.spotify.com/download  (UTF-16)",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "https://download.scdn.co/SpotifyFullSetup.exe  (UTF-16)",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "https://download.scdn.co/SpotifyFullSetup.exe  (UTF-16)",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "combase.dll  (UTF-16)",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "combase.dll  (UTF-16)",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "dkernel32.dll  (UTF-16)",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "dkernel32.dll  (UTF-16)",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-synch-l1-2-0.dll  (UTF-16)",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "api-ms-win-core-synch-l1-2-0.dll  (UTF-16)",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "installer_stub.exe  (UTF-16)",
+       "count": 1,
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "installer_stub.exe  (UTF-16)",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      }
+     ],
+     "total": 45,
+     "note": "URLs, absolute paths, library names, and type-like identifiers. Strings are data from the target.",
+     "confidence": "pattern"
+    },
+    {
+     "id": "binary.wide_strings",
+     "kind": "table",
+     "title": "Readable UTF-16 strings",
+     "columns": [
+      {
+       "key": "file",
+       "label": "File"
+      },
+      {
+       "key": "offset",
+       "label": "Offset"
+      },
+      {
+       "key": "string",
+       "label": "String"
+      }
+     ],
+     "rows": [
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-fibers-l1-1-1",
+       "offset": "0x5a6d8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5a6d8: api-ms-win-core-fibers-l1-1-1",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-synch-l1-2-0",
+       "offset": "0x5a718",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5a718: api-ms-win-core-synch-l1-2-0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "kernel32",
+       "offset": "0x5a758",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5a758: kernel32",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-",
+       "offset": "0x5a770",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5a770: api-ms-",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "mscoree.dll",
+       "offset": "0x5ab00",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ab00: mscoree.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "LC_ALL",
+       "offset": "0x5ac40",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ac40: LC_ALL",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "LC_COLLATE",
+       "offset": "0x5ac50",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ac50: LC_COLLATE",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "LC_CTYPE",
+       "offset": "0x5ac68",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ac68: LC_CTYPE",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "LC_MONETARY",
+       "offset": "0x5ac80",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ac80: LC_MONETARY",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "LC_NUMERIC",
+       "offset": "0x5ac98",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ac98: LC_NUMERIC",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "LC_TIME",
+       "offset": "0x5acb0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5acb0: LC_TIME",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "(null)",
+       "offset": "0x5b098",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b098: (null)",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Sunday",
+       "offset": "0x5b6d0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b6d0: Sunday",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Monday",
+       "offset": "0x5b6e0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b6e0: Monday",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Tuesday",
+       "offset": "0x5b6f0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b6f0: Tuesday",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Wednesday",
+       "offset": "0x5b700",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b700: Wednesday",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Thursday",
+       "offset": "0x5b718",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b718: Thursday",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Friday",
+       "offset": "0x5b730",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b730: Friday",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Saturday",
+       "offset": "0x5b740",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b740: Saturday",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "January",
+       "offset": "0x5b7b8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b7b8: January",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "February",
+       "offset": "0x5b7c8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b7c8: February",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "March",
+       "offset": "0x5b7e0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b7e0: March",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "April",
+       "offset": "0x5b7f0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b7f0: April",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "August",
+       "offset": "0x5b820",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b820: August",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "September",
+       "offset": "0x5b830",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b830: September",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "October",
+       "offset": "0x5b848",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b848: October",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "November",
+       "offset": "0x5b858",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b858: November",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "December",
+       "offset": "0x5b870",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b870: December",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "dddd, MMMM dd, yyyy",
+       "offset": "0x5b8b0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5b8b0: dddd, MMMM dd, yyyy",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "american",
+       "offset": "0x5c6a8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c6a8: american",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "american english",
+       "offset": "0x5c6c0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c6c0: american english",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "american-english",
+       "offset": "0x5c6e8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c6e8: american-english",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "australian",
+       "offset": "0x5c710",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c710: australian",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "belgian",
+       "offset": "0x5c728",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c728: belgian",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "canadian",
+       "offset": "0x5c738",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c738: canadian",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "chinese",
+       "offset": "0x5c760",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c760: chinese",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "chinese-hongkong",
+       "offset": "0x5c770",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c770: chinese-hongkong",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "chinese-simplified",
+       "offset": "0x5c798",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c798: chinese-simplified",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "chinese-singapore",
+       "offset": "0x5c7c0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c7c0: chinese-singapore",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "chinese-traditional",
+       "offset": "0x5c7e8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c7e8: chinese-traditional",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "dutch-belgian",
+       "offset": "0x5c810",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c810: dutch-belgian",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-american",
+       "offset": "0x5c830",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c830: english-american",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-aus",
+       "offset": "0x5c858",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c858: english-aus",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-belize",
+       "offset": "0x5c870",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c870: english-belize",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-can",
+       "offset": "0x5c890",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c890: english-can",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-caribbean",
+       "offset": "0x5c8a8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c8a8: english-caribbean",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-ire",
+       "offset": "0x5c8d0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c8d0: english-ire",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-jamaica",
+       "offset": "0x5c8e8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c8e8: english-jamaica",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-nz",
+       "offset": "0x5c908",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c908: english-nz",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-south africa",
+       "offset": "0x5c920",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c920: english-south africa",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-trinidad y tobago",
+       "offset": "0x5c950",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c950: english-trinidad y tobago",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-uk",
+       "offset": "0x5c988",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c988: english-uk",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-us",
+       "offset": "0x5c9a0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c9a0: english-us",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "english-usa",
+       "offset": "0x5c9b8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c9b8: english-usa",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "french-belgian",
+       "offset": "0x5c9d0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c9d0: french-belgian",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "french-canadian",
+       "offset": "0x5c9f0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5c9f0: french-canadian",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "french-luxembourg",
+       "offset": "0x5ca10",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ca10: french-luxembourg",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "french-swiss",
+       "offset": "0x5ca38",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ca38: french-swiss",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "german-austrian",
+       "offset": "0x5ca58",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ca58: german-austrian",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "german-lichtenstein",
+       "offset": "0x5ca78",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ca78: german-lichtenstein",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "german-luxembourg",
+       "offset": "0x5caa0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5caa0: german-luxembourg",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "german-swiss",
+       "offset": "0x5cac8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cac8: german-swiss",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "irish-english",
+       "offset": "0x5cae8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cae8: irish-english",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "italian-swiss",
+       "offset": "0x5cb08",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cb08: italian-swiss",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "norwegian",
+       "offset": "0x5cb28",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cb28: norwegian",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "norwegian-bokmal",
+       "offset": "0x5cb40",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cb40: norwegian-bokmal",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "norwegian-nynorsk",
+       "offset": "0x5cb68",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cb68: norwegian-nynorsk",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "portuguese-brazilian",
+       "offset": "0x5cb90",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cb90: portuguese-brazilian",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-argentina",
+       "offset": "0x5cbc0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cbc0: spanish-argentina",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-bolivia",
+       "offset": "0x5cbe8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cbe8: spanish-bolivia",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-chile",
+       "offset": "0x5cc08",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cc08: spanish-chile",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-colombia",
+       "offset": "0x5cc28",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cc28: spanish-colombia",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-costa rica",
+       "offset": "0x5cc50",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cc50: spanish-costa rica",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-dominican republic",
+       "offset": "0x5cc78",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cc78: spanish-dominican republic",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-ecuador",
+       "offset": "0x5ccb0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ccb0: spanish-ecuador",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-el salvador",
+       "offset": "0x5ccd0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ccd0: spanish-el salvador",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-guatemala",
+       "offset": "0x5ccf8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ccf8: spanish-guatemala",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-honduras",
+       "offset": "0x5cd20",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cd20: spanish-honduras",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-mexican",
+       "offset": "0x5cd48",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cd48: spanish-mexican",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-modern",
+       "offset": "0x5cd68",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cd68: spanish-modern",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-nicaragua",
+       "offset": "0x5cd88",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cd88: spanish-nicaragua",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-panama",
+       "offset": "0x5cdb0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cdb0: spanish-panama",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-paraguay",
+       "offset": "0x5cdd0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cdd0: spanish-paraguay",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-peru",
+       "offset": "0x5cdf8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cdf8: spanish-peru",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-puerto rico",
+       "offset": "0x5ce18",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ce18: spanish-puerto rico",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-uruguay",
+       "offset": "0x5ce40",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ce40: spanish-uruguay",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "spanish-venezuela",
+       "offset": "0x5ce60",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ce60: spanish-venezuela",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "swedish-finland",
+       "offset": "0x5ce88",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ce88: swedish-finland",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "swiss",
+       "offset": "0x5cea8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cea8: swiss",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "america",
+       "offset": "0x5ced0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ced0: america",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "britain",
+       "offset": "0x5cee0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cee0: britain",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "china",
+       "offset": "0x5cef0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cef0: china",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "czech",
+       "offset": "0x5cf00",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cf00: czech",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "england",
+       "offset": "0x5cf10",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cf10: england",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "great britain",
+       "offset": "0x5cf20",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cf20: great britain",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "holland",
+       "offset": "0x5cf40",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cf40: holland",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "hong-kong",
+       "offset": "0x5cf50",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cf50: hong-kong",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "new-zealand",
+       "offset": "0x5cf68",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cf68: new-zealand",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "pr china",
+       "offset": "0x5cf88",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cf88: pr china",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "pr-china",
+       "offset": "0x5cfa0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cfa0: pr-china",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "puerto-rico",
+       "offset": "0x5cfb8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cfb8: puerto-rico",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "slovak",
+       "offset": "0x5cfd0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cfd0: slovak",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "south africa",
+       "offset": "0x5cfe0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5cfe0: south africa",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "south korea",
+       "offset": "0x5d000",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d000: south korea",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "south-africa",
+       "offset": "0x5d018",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d018: south-africa",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "south-korea",
+       "offset": "0x5d038",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d038: south-korea",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "trinidad & tobago",
+       "offset": "0x5d050",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d050: trinidad & tobago",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "united-kingdom",
+       "offset": "0x5d078",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d078: united-kingdom",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "united-states",
+       "offset": "0x5d098",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d098: united-states",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "utf-8",
+       "offset": "0x5d0d0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d0d0: utf-8",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-datetime-l1-1-1",
+       "offset": "0x5d1c0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d1c0: api-ms-win-core-datetime-l1-1-1",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-fibers-l1-1-2",
+       "offset": "0x5d200",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d200: api-ms-win-core-fibers-l1-1-2",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-file-l1-2-4",
+       "offset": "0x5d240",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d240: api-ms-win-core-file-l1-2-4",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-file-l1-2-2",
+       "offset": "0x5d278",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d278: api-ms-win-core-file-l1-2-2",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-file-l2-1-4",
+       "offset": "0x5d2b0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d2b0: api-ms-win-core-file-l2-1-4",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-localization-l1-2-1",
+       "offset": "0x5d2f0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d2f0: api-ms-win-core-localization-l1-2-1",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-localization-obsolete-l1-2-0",
+       "offset": "0x5d340",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d340: api-ms-win-core-localization-obsolete-l1-2-0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-processthreads-l1-1-2",
+       "offset": "0x5d3a0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d3a0: api-ms-win-core-processthreads-l1-1-2",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-string-l1-1-0",
+       "offset": "0x5d3f0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d3f0: api-ms-win-core-string-l1-1-0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-sysinfo-l1-2-1",
+       "offset": "0x5d430",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d430: api-ms-win-core-sysinfo-l1-2-1",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-winrt-l1-1-0",
+       "offset": "0x5d470",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d470: api-ms-win-core-winrt-l1-1-0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-xstate-l2-1-0",
+       "offset": "0x5d4b0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d4b0: api-ms-win-core-xstate-l2-1-0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-rtcore-ntuser-window-l1-1-0",
+       "offset": "0x5d4f0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d4f0: api-ms-win-rtcore-ntuser-window-l1-1-0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-security-systemfunctions-l1-1-0",
+       "offset": "0x5d540",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d540: api-ms-win-security-systemfunctions-l1-1-0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "ext-ms-win-ntuser-dialogbox-l1-1-0",
+       "offset": "0x5d5a0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d5a0: ext-ms-win-ntuser-dialogbox-l1-1-0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "ext-ms-win-ntuser-windowstation-l1-1-0",
+       "offset": "0x5d5f0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d5f0: ext-ms-win-ntuser-windowstation-l1-1-0",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "advapi32",
+       "offset": "0x5d640",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d640: advapi32",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "kernelbase",
+       "offset": "0x5d658",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d658: kernelbase",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "ntdll",
+       "offset": "0x5d670",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d670: ntdll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-appmodel-runtime-l1-1-2",
+       "offset": "0x5d680",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d680: api-ms-win-appmodel-runtime-l1-1-2",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "user32",
+       "offset": "0x5d6c8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d6c8: user32",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "ext-ms-",
+       "offset": "0x5d6d8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5d6d8: ext-ms-",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "zh-CHS",
+       "offset": "0x5e828",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5e828: zh-CHS",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "az-AZ-Latn",
+       "offset": "0x5ec68",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ec68: az-AZ-Latn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "uz-UZ-Latn",
+       "offset": "0x5ed70",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ed70: uz-UZ-Latn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "kok-IN",
+       "offset": "0x5ee58",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ee58: kok-IN",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "syr-SY",
+       "offset": "0x5ee68",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ee68: syr-SY",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "div-MV",
+       "offset": "0x5ee78",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ee78: div-MV",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "quz-BO",
+       "offset": "0x5ee88",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ee88: quz-BO",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sr-SP-Latn",
+       "offset": "0x5ef48",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ef48: sr-SP-Latn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "az-AZ-Cyrl",
+       "offset": "0x5ef70",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5ef70: az-AZ-Cyrl",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "uz-UZ-Cyrl",
+       "offset": "0x5efa8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5efa8: uz-UZ-Cyrl",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "quz-EC",
+       "offset": "0x5efc0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5efc0: quz-EC",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sr-SP-Cyrl",
+       "offset": "0x5f030",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f030: sr-SP-Cyrl",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "quz-PE",
+       "offset": "0x5f058",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f058: quz-PE",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "smj-NO",
+       "offset": "0x5f0d8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f0d8: smj-NO",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "bs-BA-Latn",
+       "offset": "0x5f148",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f148: bs-BA-Latn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "smj-SE",
+       "offset": "0x5f160",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f160: smj-SE",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sr-BA-Latn",
+       "offset": "0x5f1b0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f1b0: sr-BA-Latn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sma-NO",
+       "offset": "0x5f1c8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f1c8: sma-NO",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sr-BA-Cyrl",
+       "offset": "0x5f208",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f208: sr-BA-Cyrl",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sma-SE",
+       "offset": "0x5f220",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f220: sma-SE",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sms-FI",
+       "offset": "0x5f260",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f260: sms-FI",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "smn-FI",
+       "offset": "0x5f2a0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f2a0: smn-FI",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "zh-CHT",
+       "offset": "0x5f410",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x5f410: zh-CHT",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "az-az-cyrl",
+       "offset": "0x60380",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60380: az-az-cyrl",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "az-az-latn",
+       "offset": "0x60398",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60398: az-az-latn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "bs-ba-latn",
+       "offset": "0x603e0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x603e0: bs-ba-latn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "div-mv",
+       "offset": "0x60488",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60488: div-mv",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "kok-in",
+       "offset": "0x60858",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60858: kok-in",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "quz-bo",
+       "offset": "0x609b8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x609b8: quz-bo",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "quz-ec",
+       "offset": "0x609c8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x609c8: quz-ec",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "quz-pe",
+       "offset": "0x609d8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x609d8: quz-pe",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sma-no",
+       "offset": "0x60a68",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60a68: sma-no",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sma-se",
+       "offset": "0x60a78",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60a78: sma-se",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "smj-no",
+       "offset": "0x60a88",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60a88: smj-no",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "smj-se",
+       "offset": "0x60a98",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60a98: smj-se",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "smn-fi",
+       "offset": "0x60aa8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60aa8: smn-fi",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sms-fi",
+       "offset": "0x60ab8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60ab8: sms-fi",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sr-ba-cyrl",
+       "offset": "0x60ad8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60ad8: sr-ba-cyrl",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sr-ba-latn",
+       "offset": "0x60af0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60af0: sr-ba-latn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sr-sp-cyrl",
+       "offset": "0x60b08",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60b08: sr-sp-cyrl",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "sr-sp-latn",
+       "offset": "0x60b20",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60b20: sr-sp-latn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "syr-sy",
+       "offset": "0x60b68",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60b68: syr-sy",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "uz-uz-cyrl",
+       "offset": "0x60bf8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60bf8: uz-uz-cyrl",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "uz-uz-latn",
+       "offset": "0x60c10",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60c10: uz-uz-latn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "zh-chs",
+       "offset": "0x60c48",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60c48: zh-chs",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "zh-cht",
+       "offset": "0x60c58",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x60c58: zh-cht",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "CONOUT$",
+       "offset": "0x61960",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x61960: CONOUT$",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Spotify Update Mutex",
+       "offset": "0x63218",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x63218: Spotify Update Mutex",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Spotify Update Failed Mutex",
+       "offset": "0x63248",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x63248: Spotify Update Failed Mutex",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Spotify Update Started Mutex",
+       "offset": "0x63280",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x63280: Spotify Update Started Mutex",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Spotify Update Started Interactive Mutex",
+       "offset": "0x632c0",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x632c0: Spotify Update Started Interactive Mutex",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "https://www.spotify.com/download",
+       "offset": "0x63e10",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x63e10: https://www.spotify.com/download",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "https://download.scdn.co/SpotifyFullSetup.exe",
+       "offset": "0x63e60",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x63e60: https://download.scdn.co/SpotifyFullSetup.exe",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Spotify",
+       "offset": "0x64260",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x64260: Spotify",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "SpotifyInstaller",
+       "offset": "0x643d8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x643d8: SpotifyInstaller",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "STATIC",
+       "offset": "0x64418",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x64418: STATIC",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "msctls_progress32",
+       "offset": "0x64428",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x64428: msctls_progress32",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Windows.System.UserProfile.GlobalizationPreferences",
+       "offset": "0x9de40",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x9de40: Windows.System.UserProfile.GlobalizationPreferences",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "hLatn",
+       "offset": "0x9df26",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x9df26: hLatn",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "combase.dll",
+       "offset": "0x9df50",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x9df50: combase.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "dkernel32.dll",
+       "offset": "0xa64a6",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0xa64a6: dkernel32.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "SpotifyAB.SpotifyMusic",
+       "offset": "0xa64c8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0xa64c8: SpotifyAB.SpotifyMusic",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "api-ms-win-core-synch-l1-2-0.dll",
+       "offset": "0xa9e70",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0xa9e70: api-ms-win-core-synch-l1-2-0.dll",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "!x-sys-default-locale",
+       "offset": "0xaa170",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0xaa170: !x-sys-default-locale",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "KERNEL32.DLL",
+       "offset": "0xaaf00",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0xaaf00: KERNEL32.DLL",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "VS_VERSION_INFO",
+       "offset": "0x1027e6",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x1027e6: VS_VERSION_INFO",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "StringFileInfo",
+       "offset": "0x102842",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x102842: StringFileInfo",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "CompanyName",
+       "offset": "0x10287e",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x10287e: CompanyName",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Spotify Ltd",
+       "offset": "0x102898",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x102898: Spotify Ltd",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "FileDescription",
+       "offset": "0x1028b6",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x1028b6: FileDescription",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Spotify Installer",
+       "offset": "0x1028d8",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x1028d8: Spotify Installer",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "FileVersion",
+       "offset": "0x102902",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x102902: FileVersion",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "InternalName",
+       "offset": "0x102932",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x102932: InternalName",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "LegalCopyright",
+       "offset": "0x102976",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x102976: LegalCopyright",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Copyright (c) 2026, Spotify Ltd",
+       "offset": "0x102994",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x102994: Copyright (c) 2026, Spotify Ltd",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "OriginalFilename",
+       "offset": "0x1029da",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x1029da: OriginalFilename",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "installer_stub.exe",
+       "offset": "0x1029fc",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x1029fc: installer_stub.exe",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "ProductName",
+       "offset": "0x102a2a",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x102a2a: ProductName",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "ProductVersion",
+       "offset": "0x102a5a",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x102a5a: ProductVersion",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "VarFileInfo",
+       "offset": "0x102b22",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x102b22: VarFileInfo",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      },
+      {
+       "file": "SpotifySetup.exe",
+       "string": "Translation",
+       "offset": "0x102b42",
+       "_ev": [
+        {
+         "path": "SpotifySetup.exe",
+         "line": null,
+         "snippet": "offset 0x102b42: Translation",
+         "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b"
+        }
+       ]
+      }
+     ],
+     "total": 213,
+     "note": "Windows programs store user-facing text, object names, and identifiers as UTF-16. Mostly-letter strings only; offsets are file offsets.",
+     "confidence": "parsed"
+    }
+   ]
+  }
+ ],
+ "blind_spots": [
+  "Binary triage reads headers and strings only. Control flow, decompilation, and runtime behavior need a disassembler (Ghidra, IDA, Hopper) in an isolated environment."
+ ],
+ "findings": [],
+ "skipped": [],
+ "ledger": [
+  {
+   "path": "SpotifySetup.exe",
+   "size": 1074664,
+   "mode": "read",
+   "sha256": "b7d990f2bfcbf835af4da7e7579e2a8c019d5419f49fd347c7e2a0cce1f1258b",
+   "readers": [
+    "binary",
+    "inventory"
+   ]
+  }
+ ]
+}
